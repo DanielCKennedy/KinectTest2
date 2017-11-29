@@ -51,13 +51,16 @@
             this.xVelocityLabel = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.yVelocityLabel = new System.Windows.Forms.Label();
-            this.horizontalDirectionLabel = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.zVelocityLabel = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.xDirectionLabel = new System.Windows.Forms.Label();
             this.yDirectionLabel = new System.Windows.Forms.Label();
+            this.landingPosZLabel = new System.Windows.Forms.Label();
+            this.landingPosXLabel = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // rightHandX
@@ -286,14 +289,6 @@
             this.yVelocityLabel.Size = new System.Drawing.Size(0, 25);
             this.yVelocityLabel.TabIndex = 22;
             // 
-            // horizontalDirectionLabel
-            // 
-            this.horizontalDirectionLabel.AutoSize = true;
-            this.horizontalDirectionLabel.Location = new System.Drawing.Point(277, 527);
-            this.horizontalDirectionLabel.Name = "horizontalDirectionLabel";
-            this.horizontalDirectionLabel.Size = new System.Drawing.Size(0, 25);
-            this.horizontalDirectionLabel.TabIndex = 26;
-            // 
             // label12
             // 
             this.label12.AutoSize = true;
@@ -345,15 +340,52 @@
             this.yDirectionLabel.Size = new System.Drawing.Size(0, 25);
             this.yDirectionLabel.TabIndex = 29;
             // 
+            // landingPosZLabel
+            // 
+            this.landingPosZLabel.AutoSize = true;
+            this.landingPosZLabel.Location = new System.Drawing.Point(574, 524);
+            this.landingPosZLabel.Name = "landingPosZLabel";
+            this.landingPosZLabel.Size = new System.Drawing.Size(0, 25);
+            this.landingPosZLabel.TabIndex = 33;
+            // 
+            // landingPosXLabel
+            // 
+            this.landingPosXLabel.AutoSize = true;
+            this.landingPosXLabel.Location = new System.Drawing.Point(574, 473);
+            this.landingPosXLabel.Name = "landingPosXLabel";
+            this.landingPosXLabel.Size = new System.Drawing.Size(0, 25);
+            this.landingPosXLabel.TabIndex = 32;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(375, 524);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(157, 25);
+            this.label16.TabIndex = 31;
+            this.label16.Text = "Landing Pos Z:";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(375, 473);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(158, 25);
+            this.label17.TabIndex = 30;
+            this.label17.Text = "Landing Pos X:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(956, 677);
+            this.Controls.Add(this.landingPosZLabel);
+            this.Controls.Add(this.landingPosXLabel);
+            this.Controls.Add(this.label16);
+            this.Controls.Add(this.label17);
             this.Controls.Add(this.yDirectionLabel);
             this.Controls.Add(this.xDirectionLabel);
             this.Controls.Add(this.label11);
-            this.Controls.Add(this.horizontalDirectionLabel);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.zVelocityLabel);
             this.Controls.Add(this.label14);
@@ -414,13 +446,16 @@
         private System.Windows.Forms.Label xVelocityLabel;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label yVelocityLabel;
-        private System.Windows.Forms.Label horizontalDirectionLabel;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label zVelocityLabel;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label xDirectionLabel;
         private System.Windows.Forms.Label yDirectionLabel;
+        private System.Windows.Forms.Label landingPosZLabel;
+        private System.Windows.Forms.Label landingPosXLabel;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label17;
     }
 }
 

@@ -107,6 +107,8 @@ namespace KinectTest2
                                 releasedZVelocity = calculateVelocity(endingPoint.Z, startingPoint.Z);  //Flipped due to perspective being from Kinect
                                 releasedXDirection = Math.Atan2(releasedXVelocity, releasedZVelocity);
                                 releasedYDirection = Math.Atan2(releasedYVelocity, releasedZVelocity);
+
+                                calculateLandingPosition(startingPoint, endingPoint);
                                 recordedPoints.Clear();
                                 recording = false;
 
@@ -128,12 +130,30 @@ namespace KinectTest2
                             rightHipY.Text = shoulderRight.Position.Y.ToString("#.##");
                             rightHipZ.Text = shoulderRight.Position.Z.ToString("#.##");
 
-                            Console.Out.WriteLine($"Hand: {rightHand.Position.X} {rightHand.Position.Y} {rightHand.Position.Z}");
-                            Console.Out.WriteLine($"Hip: {rightHip.Position.X} {rightHip.Position.Y} {rightHip.Position.Z}");
+                            //Console.Out.WriteLine($"Hand: {rightHand.Position.X} {rightHand.Position.Y} {rightHand.Position.Z}");
+                            //Console.Out.WriteLine($"Hip: {rightHip.Position.X} {rightHip.Position.Y} {rightHip.Position.Z}");
                         }
                     }
                 }
             }
+        }
+
+        private void calculateLandingPosition(CameraSpacePoint startingPoint, CameraSpacePoint endingPoint)
+        {
+            double velocityYZ = Math.Sqrt(Math.Pow(releasedYVelocity, 2) + Math.Pow(releasedZVelocity, 2)); 
+            double theta = Math.Atan((endingPoint.Y - startingPoint.Y) / (startingPoint.Z - endingPoint.Z));
+            double acceleration = -9.8;
+            double a = acceleration * .5;
+            double b = velocityYZ * Math.Sin(theta);
+            double c = startingPoint.Y;
+            double time = (((-1) * b) - (Math.Sqrt(b*b - (4 * a * c)) / (2 * a)));
+            if (time < 0)
+                time = (((-1) * b) + (Math.Sqrt(b * b - (4 * a * c)) / (2 * a)));
+            double distanceZ = velocityYZ * Math.Cos(theta) * time;
+            double distanceX = releasedXVelocity * time;
+
+            landingPosXLabel.Text = distanceX.ToString("#.##") + " meters away";
+            landingPosZLabel.Text = distanceZ.ToString("#.##") + " meters away";
         }
 
         private CameraSpacePoint getStartingPoint()
