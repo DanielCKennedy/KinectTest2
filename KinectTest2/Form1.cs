@@ -35,6 +35,8 @@ namespace KinectTest2
         private double releasedXVelocity;
         private double releasedZVelocity;
 
+        private double yCorrection;
+
         public Form1()
         {
             InitializeComponent();
@@ -92,6 +94,8 @@ namespace KinectTest2
                             recording = inRecordingMode(joints) || recording;
                             releasedNow = isReleased(joints);
 
+                            yCorrection = 1.75 - joints[JointType.HipLeft].Position.Y;
+
                             recodingModeLabel.Text = recording ? "TRUE" : "FALSE";
                             isReleasedLabel.Text = releasedNow ? "TRUE" : "FALSE";
 
@@ -103,7 +107,7 @@ namespace KinectTest2
                                 CameraSpacePoint startingPoint = getStartingPoint();
                                 CameraSpacePoint endingPoint = recordedPoints.ElementAt(recordedPoints.Count - 1);
                                 releasedXVelocity = calculateVelocity(startingPoint.X, endingPoint.X);
-                                releasedYVelocity = calculateVelocity(startingPoint.Y, endingPoint.Y);
+                                releasedYVelocity = calculateVelocity(startingPoint.Y, endingPoint.Y) + yCorrection;
                                 releasedZVelocity = calculateVelocity(endingPoint.Z, startingPoint.Z);  //Flipped due to perspective being from Kinect
                                 releasedXDirection = Math.Atan2(releasedXVelocity, releasedZVelocity);
                                 releasedYDirection = Math.Atan2(releasedYVelocity, releasedZVelocity);
@@ -140,18 +144,31 @@ namespace KinectTest2
 
         private void calculateLandingPosition(CameraSpacePoint startingPoint, CameraSpacePoint endingPoint)
         {
-            double velocityYZ = Math.Sqrt(Math.Pow(releasedYVelocity, 2) + Math.Pow(releasedZVelocity, 2)); 
-            double theta = Math.Atan((endingPoint.Y - startingPoint.Y) / (startingPoint.Z - endingPoint.Z));
+            double velocityYZ = Math.Sqrt(Math.Pow(releasedYVelocity, 2) + Math.Pow(releasedZVelocity, 2));
+            double dy = endingPoint.Y - startingPoint.Y + yCorrection;
+            double dz = startingPoint.Z - endingPoint.Z;
+            Console.Out.WriteLine($"dy = {dy}");
+            Console.Out.WriteLine($"dz = {dz}");
+            Console.Out.WriteLine($"velocityYZ = {velocityYZ}");
+            double theta = Math.Atan((endingPoint.Y - startingPoint.Y + yCorrection) / (startingPoint.Z - endingPoint.Z));
             double acceleration = -9.8;
             double a = acceleration * .5;
             double b = velocityYZ * Math.Sin(theta);
-            double c = startingPoint.Y;
-            double time = (((-1) * b) - (Math.Sqrt(b*b - (4 * a * c)) / (2 * a)));
-            if (time < 0)
-                time = (((-1) * b) + (Math.Sqrt(b * b - (4 * a * c)) / (2 * a)));
+            double c = Math.Abs(startingPoint.Y + yCorrection);
+            Console.Out.WriteLine($"yCorrection = {yCorrection}");
+            Console.Out.WriteLine($"a = {a}");
+            Console.Out.WriteLine($"b = {b}");
+            Console.Out.WriteLine($"c = {c}");
+            double time = ((-1 * b) - Math.Sqrt(b * b - (4 * a * c))) / (2 * a);
+            Console.Out.WriteLine($"time = {time}");
+            //double time = (((-1) * b) - (Math.Sqrt(b*b - (4 * a * c)) / (2 * a)));
+            //if (time < 0)
+            //    time = (((-1) * b) + (Math.Sqrt(b * b - (4 * a * c)) / (2 * a)));
             double distanceZ = velocityYZ * Math.Cos(theta) * time;
             double distanceX = releasedXVelocity * time;
 
+            Console.Out.WriteLine($"velocityYZ = {velocityYZ}");
+            Console.Out.WriteLine($"disanceZ = {distanceZ}");
             landingPosXLabel.Text = distanceX.ToString("#.##") + " meters away";
             landingPosZLabel.Text = distanceZ.ToString("#.##") + " meters away";
         }
@@ -180,7 +197,7 @@ namespace KinectTest2
 
         private double calculateDirctionFromPoints(double startA, double startB, double endA, double endB)
         {
-            return Math.Atan2((endA - startA), (endB - startB));
+            return Math.Atan((endA - startA)/(endB - startB));
         }
 
         private bool inRecordingMode(IReadOnlyDictionary<JointType, Joint> joints)
