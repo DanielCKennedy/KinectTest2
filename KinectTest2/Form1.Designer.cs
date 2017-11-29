@@ -48,9 +48,13 @@
             this.label10 = new System.Windows.Forms.Label();
             this.dyLabel = new System.Windows.Forms.Label();
             this.labelXX = new System.Windows.Forms.Label();
-            this.velocityLabel = new System.Windows.Forms.Label();
+            this.verticalVelocityLabel = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.angleLabel = new System.Windows.Forms.Label();
+            this.horizontalVelocityLabel = new System.Windows.Forms.Label();
+            this.horizontalDirectionLabel = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.verticalDirectionLabel = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // rightHandX
@@ -250,43 +254,81 @@
             this.labelXX.AutoSize = true;
             this.labelXX.Location = new System.Drawing.Point(54, 347);
             this.labelXX.Name = "labelXX";
-            this.labelXX.Size = new System.Drawing.Size(202, 25);
+            this.labelXX.Size = new System.Drawing.Size(172, 25);
             this.labelXX.TabIndex = 19;
-            this.labelXX.Text = "Calculated Velocity:";
+            this.labelXX.Text = "Vertical Velocity:";
             // 
-            // velocityLabel
+            // verticalVelocityLabel
             // 
-            this.velocityLabel.AutoSize = true;
-            this.velocityLabel.Location = new System.Drawing.Point(277, 347);
-            this.velocityLabel.Name = "velocityLabel";
-            this.velocityLabel.Size = new System.Drawing.Size(0, 25);
-            this.velocityLabel.TabIndex = 20;
+            this.verticalVelocityLabel.AutoSize = true;
+            this.verticalVelocityLabel.Location = new System.Drawing.Point(277, 347);
+            this.verticalVelocityLabel.Name = "verticalVelocityLabel";
+            this.verticalVelocityLabel.Size = new System.Drawing.Size(0, 25);
+            this.verticalVelocityLabel.TabIndex = 20;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(75, 403);
+            this.label9.Location = new System.Drawing.Point(54, 403);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(181, 25);
+            this.label9.Size = new System.Drawing.Size(197, 25);
             this.label9.TabIndex = 21;
-            this.label9.Text = "Calculated Angle:";
+            this.label9.Text = "Horizontal Velocity:";
             // 
-            // angleLabel
+            // horizontalVelocityLabel
             // 
-            this.angleLabel.AutoSize = true;
-            this.angleLabel.Location = new System.Drawing.Point(282, 403);
-            this.angleLabel.Name = "angleLabel";
-            this.angleLabel.Size = new System.Drawing.Size(0, 25);
-            this.angleLabel.TabIndex = 22;
+            this.horizontalVelocityLabel.AutoSize = true;
+            this.horizontalVelocityLabel.Location = new System.Drawing.Point(277, 403);
+            this.horizontalVelocityLabel.Name = "horizontalVelocityLabel";
+            this.horizontalVelocityLabel.Size = new System.Drawing.Size(0, 25);
+            this.horizontalVelocityLabel.TabIndex = 22;
+            // 
+            // horizontalDirectionLabel
+            // 
+            this.horizontalDirectionLabel.AutoSize = true;
+            this.horizontalDirectionLabel.Location = new System.Drawing.Point(277, 527);
+            this.horizontalDirectionLabel.Name = "horizontalDirectionLabel";
+            this.horizontalDirectionLabel.Size = new System.Drawing.Size(0, 25);
+            this.horizontalDirectionLabel.TabIndex = 26;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(54, 527);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(206, 25);
+            this.label12.TabIndex = 25;
+            this.label12.Text = "Horizontal Direction:";
+            // 
+            // verticalDirectionLabel
+            // 
+            this.verticalDirectionLabel.AutoSize = true;
+            this.verticalDirectionLabel.Location = new System.Drawing.Point(277, 471);
+            this.verticalDirectionLabel.Name = "verticalDirectionLabel";
+            this.verticalDirectionLabel.Size = new System.Drawing.Size(0, 25);
+            this.verticalDirectionLabel.TabIndex = 24;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(54, 471);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(181, 25);
+            this.label14.TabIndex = 23;
+            this.label14.Text = "Vertical Direction:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(956, 677);
-            this.Controls.Add(this.angleLabel);
+            this.Controls.Add(this.horizontalDirectionLabel);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.verticalDirectionLabel);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.horizontalVelocityLabel);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.velocityLabel);
+            this.Controls.Add(this.verticalVelocityLabel);
             this.Controls.Add(this.labelXX);
             this.Controls.Add(this.dyLabel);
             this.Controls.Add(this.label10);
@@ -337,9 +379,13 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label dyLabel;
         private System.Windows.Forms.Label labelXX;
-        private System.Windows.Forms.Label velocityLabel;
+        private System.Windows.Forms.Label verticalVelocityLabel;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label angleLabel;
+        private System.Windows.Forms.Label horizontalVelocityLabel;
+        private System.Windows.Forms.Label horizontalDirectionLabel;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label verticalDirectionLabel;
+        private System.Windows.Forms.Label label14;
     }
 }
 

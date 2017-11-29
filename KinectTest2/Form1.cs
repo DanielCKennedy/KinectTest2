@@ -26,8 +26,12 @@ namespace KinectTest2
         public static float HAND_SHOULDER_Z_DELTA = 0.05f;
         public static float HAND_ELBOW_Y_DELTA = 0.01f;
         public static float TIME_OF_5_FRAMES = 0.17f;
-        private double releasedAngle;
-        private double releasedVelocity;
+        public static int   NUM_FRAMES_TO_AVG = 5;
+
+        private double releasedHorizontalDirection;
+        private double releasedVerticalDirection;
+        private double releasedVerticalVelocity;
+        private double releasedHorizontalVelocity;
 
         public Form1()
         {
@@ -94,12 +98,17 @@ namespace KinectTest2
 
                             if (recording && releasedNow)
                             {
-                                releasedAngle = calculateAngle();
-                                releasedVelocity = calculateVelocity();
+                                releasedHorizontalVelocity = calculateHorizontalVelocity();
+                                releasedVerticalVelocity = calculateVerticleVelocity();
+                                releasedVerticalDirection = calculateVerticleDirection();
+                                releasedHorizontalDirection = calculateHorizontalDirection();
                                 recordedPoints.Clear();
                                 recording = false;
 
-                                velocityLabel.Text = releasedVelocity.ToString("#.##");
+                                verticalVelocityLabel.Text = releasedVerticalVelocity.ToString("#.##") + " m/s";
+                                verticalDirectionLabel.Text = releasedVerticalDirection.ToString("#.##") + " degrees";
+                                horizontalVelocityLabel.Text = releasedHorizontalVelocity.ToString("#.##") + " m/s";
+                                horizontalDirectionLabel.Text = releasedHorizontalDirection.ToString("#.##") + " degrees";
 
                             }
 
@@ -122,28 +131,98 @@ namespace KinectTest2
             }
         }
 
-        private double calculateVelocity()
+        private double calculateHorizontalVelocity()
         {
             double slope = 0;
             int len = recordedPoints.Count - 1;
-            int numFrames = 5;
-            int i;
-            for (i = 5; i >= 0; i++)
-            {
-                if (len - i < 0)
-                    break;
+            double zEnd = len >= 0 ? recordedPoints.ElementAt(len).Z : 0;
+            double xEnd = len >= 0 ? recordedPoints.ElementAt(len).X : 0;
+            double zStart = 0;
+            double xStart = 0;
 
-                slope += recordedPoints.ElementAt(len - i).Y / recordedPoints.ElementAt(len - i).Z;
+            for (int i = NUM_FRAMES_TO_AVG; i >= 0 && len >= 0; i--)
+            {
+                if (len - i >= 0)
+                {
+                    xStart = recordedPoints.ElementAt(len - i).X;
+                    zStart = recordedPoints.ElementAt(len - i).Z;
+                    break;
+                }
             }
 
-            slope /= numFrames - i;
+            slope = (xEnd - xStart) / (zEnd - zStart);
 
             return slope / TIME_OF_5_FRAMES;
         }
 
-        private double calculateAngle()
+        private double calculateVerticleVelocity()
         {
-            return 0;
+            double slope = 0;
+            int len = recordedPoints.Count - 1;
+            double zEnd = len >= 0 ? recordedPoints.ElementAt(len).Z : 0;
+            double yEnd = len >= 0 ? recordedPoints.ElementAt(len).Y : 0;
+            double zStart = 0;
+            double yStart = 0;
+          
+            for (int i = NUM_FRAMES_TO_AVG; i >= 0 && len >= 0; i--)
+            {
+                if (len - i >= 0)
+                {
+                    yStart = recordedPoints.ElementAt(len - i).Y;
+                    zStart = recordedPoints.ElementAt(len - i).Z;
+                    break;
+                }
+            }
+
+            slope = (yEnd - yStart) / (zEnd - zStart);
+
+            return slope / TIME_OF_5_FRAMES;
+        }
+
+        private double calculateVerticleDirection()
+        {
+            int len = recordedPoints.Count - 1;
+            double endZ = len >= 0 ? recordedPoints.ElementAt(len).Z : 0;
+            double endY = len >= 0 ? recordedPoints.ElementAt(len).Y : 0;
+            double startZ = 0;
+            double startY = 0;
+
+            for (int i = NUM_FRAMES_TO_AVG; i >= 0 && len >= 0; i--)
+            {
+                if (len - i >= 0)
+                {
+                    startY = recordedPoints.ElementAt(len - i).Y;
+                    startZ = recordedPoints.ElementAt(len - i).Z;
+                    break;
+                }
+            }
+
+            return Math.Atan2(Math.Abs(endY - startY), Math.Abs(endZ - startZ));
+        }
+
+        private double calculateHorizontalDirection()
+        {
+            int len = recordedPoints.Count - 1;
+            double endZ = len >= 0 ? recordedPoints.ElementAt(len).Z : 0;
+            double endX = len >= 0 ? recordedPoints.ElementAt(len).X : 0;
+            double startZ = 0;
+            double startX = 0;
+            //double zComponent = Math.Abs(startZ - endZ);
+            //double xComponent = Math.Abs(startX - endX);
+
+            for (int i = NUM_FRAMES_TO_AVG; i >= 0 && len >= 0; i--)
+            {
+                if (len - i >= 0)
+                {
+                    startX = recordedPoints.ElementAt(len - i).X;
+                    startZ = recordedPoints.ElementAt(len - i).Z;
+                    break;
+                }
+            }
+
+            //double hypot = Math.Sqrt((zComponent * zComponent) + (xComponent * xComponent));
+
+            return Math.Atan2(Math.Abs(endX - startX), Math.Abs(endZ - startZ));
         }
 
         private bool inRecordingMode(IReadOnlyDictionary<JointType, Joint> joints)
