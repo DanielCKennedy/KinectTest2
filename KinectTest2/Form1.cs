@@ -28,10 +28,12 @@ namespace KinectTest2
         public static float TIME_OF_5_FRAMES = 0.17f;
         public static int   NUM_FRAMES_TO_AVG = 5;
 
-        private double releasedHorizontalDirection;
-        private double releasedVerticalDirection;
-        private double releasedVerticalVelocity;
-        private double releasedHorizontalVelocity;
+        private double releasedXDirection;
+        private double releasedYDirection;
+        private double releasedZDirection;
+        private double releasedYVelocity;
+        private double releasedXVelocity;
+        private double releasedZVelocity;
 
         public Form1()
         {
@@ -98,18 +100,21 @@ namespace KinectTest2
 
                             if (recording && releasedNow)
                             {
-                                releasedHorizontalVelocity = calculateHorizontalVelocity();
-                                releasedVerticalVelocity = calculateVerticleVelocity();
-                                releasedVerticalDirection = calculateVerticleDirection();
-                                releasedHorizontalDirection = calculateHorizontalDirection();
+                                CameraSpacePoint startingPoint = getStartingPoint();
+                                CameraSpacePoint endingPoint = recordedPoints.ElementAt(recordedPoints.Count - 1);
+                                releasedXVelocity = calculateVelocity(startingPoint.X, endingPoint.X);
+                                releasedYVelocity = calculateVelocity(startingPoint.Y, endingPoint.Y);
+                                releasedZVelocity = calculateVelocity(endingPoint.Z, startingPoint.Z);  //Flipped due to perspective being from Kinect
+                                releasedXDirection = Math.Atan2(releasedXVelocity, releasedZVelocity);
+                                releasedYDirection = Math.Atan2(releasedYVelocity, releasedZVelocity);
                                 recordedPoints.Clear();
                                 recording = false;
 
-                                verticalVelocityLabel.Text = releasedVerticalVelocity.ToString("#.##") + " m/s";
-                                verticalDirectionLabel.Text = releasedVerticalDirection.ToString("#.##") + " degrees";
-                                horizontalVelocityLabel.Text = releasedHorizontalVelocity.ToString("#.##") + " m/s";
-                                horizontalDirectionLabel.Text = releasedHorizontalDirection.ToString("#.##") + " degrees";
-
+                                xVelocityLabel.Text = releasedXVelocity.ToString("#.##") + " m/s";
+                                zVelocityLabel.Text = releasedZVelocity.ToString("#.##") + " m/s";
+                                yVelocityLabel.Text = releasedYVelocity.ToString("#.##") + " m/s";
+                                xDirectionLabel.Text = releasedXDirection.ToString("#.##") + " degrees";
+                                yDirectionLabel.Text = releasedYDirection.ToString("#.##") + " degrees";
                             }
 
 
@@ -131,98 +136,31 @@ namespace KinectTest2
             }
         }
 
-        private double calculateHorizontalVelocity()
+        private CameraSpacePoint getStartingPoint()
         {
-            double slope = 0;
             int len = recordedPoints.Count - 1;
-            double zEnd = len >= 0 ? recordedPoints.ElementAt(len).Z : 0;
-            double xEnd = len >= 0 ? recordedPoints.ElementAt(len).X : 0;
-            double zStart = 0;
-            double xStart = 0;
+            CameraSpacePoint csp = recordedPoints.ElementAt(0);
 
             for (int i = NUM_FRAMES_TO_AVG; i >= 0 && len >= 0; i--)
             {
                 if (len - i >= 0)
                 {
-                    xStart = recordedPoints.ElementAt(len - i).X;
-                    zStart = recordedPoints.ElementAt(len - i).Z;
+                    csp = recordedPoints.ElementAt(len - i);
                     break;
                 }
             }
 
-            slope = (xEnd - xStart) / (zEnd - zStart);
-
-            return slope / TIME_OF_5_FRAMES;
+            return csp;
         }
 
-        private double calculateVerticleVelocity()
+        private double calculateVelocity(double start, double end)
         {
-            double slope = 0;
-            int len = recordedPoints.Count - 1;
-            double zEnd = len >= 0 ? recordedPoints.ElementAt(len).Z : 0;
-            double yEnd = len >= 0 ? recordedPoints.ElementAt(len).Y : 0;
-            double zStart = 0;
-            double yStart = 0;
-          
-            for (int i = NUM_FRAMES_TO_AVG; i >= 0 && len >= 0; i--)
-            {
-                if (len - i >= 0)
-                {
-                    yStart = recordedPoints.ElementAt(len - i).Y;
-                    zStart = recordedPoints.ElementAt(len - i).Z;
-                    break;
-                }
-            }
-
-            slope = (yEnd - yStart) / (zEnd - zStart);
-
-            return slope / TIME_OF_5_FRAMES;
+            return (end - start) / TIME_OF_5_FRAMES;
         }
 
-        private double calculateVerticleDirection()
+        private double calculateDirctionFromPoints(double startA, double startB, double endA, double endB)
         {
-            int len = recordedPoints.Count - 1;
-            double endZ = len >= 0 ? recordedPoints.ElementAt(len).Z : 0;
-            double endY = len >= 0 ? recordedPoints.ElementAt(len).Y : 0;
-            double startZ = 0;
-            double startY = 0;
-
-            for (int i = NUM_FRAMES_TO_AVG; i >= 0 && len >= 0; i--)
-            {
-                if (len - i >= 0)
-                {
-                    startY = recordedPoints.ElementAt(len - i).Y;
-                    startZ = recordedPoints.ElementAt(len - i).Z;
-                    break;
-                }
-            }
-
-            return Math.Atan2(Math.Abs(endY - startY), Math.Abs(endZ - startZ));
-        }
-
-        private double calculateHorizontalDirection()
-        {
-            int len = recordedPoints.Count - 1;
-            double endZ = len >= 0 ? recordedPoints.ElementAt(len).Z : 0;
-            double endX = len >= 0 ? recordedPoints.ElementAt(len).X : 0;
-            double startZ = 0;
-            double startX = 0;
-            //double zComponent = Math.Abs(startZ - endZ);
-            //double xComponent = Math.Abs(startX - endX);
-
-            for (int i = NUM_FRAMES_TO_AVG; i >= 0 && len >= 0; i--)
-            {
-                if (len - i >= 0)
-                {
-                    startX = recordedPoints.ElementAt(len - i).X;
-                    startZ = recordedPoints.ElementAt(len - i).Z;
-                    break;
-                }
-            }
-
-            //double hypot = Math.Sqrt((zComponent * zComponent) + (xComponent * xComponent));
-
-            return Math.Atan2(Math.Abs(endX - startX), Math.Abs(endZ - startZ));
+            return Math.Atan2((endA - startA), (endB - startB));
         }
 
         private bool inRecordingMode(IReadOnlyDictionary<JointType, Joint> joints)
@@ -252,6 +190,11 @@ namespace KinectTest2
         }
 
         private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
         {
 
         }
